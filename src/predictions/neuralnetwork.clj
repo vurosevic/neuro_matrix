@@ -59,8 +59,10 @@
   (let [o-scalar (entry o-deltas current)
         neuron-weights (row o-weights current)]
     (do
-      (axpy! (scal speed-learning (mul (dv (replicate (dim o-hidden) o-scalar)) o-hidden)) neuron-weights)
+      (axpy! (scal speed-learning (mul (scal o-scalar (prepare-unit-vector (dim o-hidden))) o-hidden)) neuron-weights)
       (if (< (inc current) (dim o-deltas))
         (change-output-weights o-weights o-deltas o-hidden speed-learning (inc current))))))
+
+
 
 

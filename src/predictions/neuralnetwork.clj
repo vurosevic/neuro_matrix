@@ -63,6 +63,22 @@
       (if (< (inc current) (dim o-deltas))
         (change-output-weights o-weights o-deltas o-hidden speed-learning (inc current))))))
 
+(defn change-hidden-weights
+  [h-weights h-deltas i-hidden speed-learning current]
+  (let [o-scalar (entry h-deltas current)
+        neuron-weights (row h-weights current)]
+    (do
+      (axpy! (scal speed-learning (mul (scal o-scalar (prepare-unit-vector (dim i-hidden))) i-hidden)) neuron-weights)
+      (if (< (inc current) (dim h-deltas))
+        (change-hidden-weights h-weights h-deltas i-hidden speed-learning (inc current))))))
 
-
+(defn backpropagation
+  [hidden-layer output-layer input target speed-learning]
+  (let [output (layer-output (layer-output input hidden-layer tanh) output-layer tanh)
+        o-deltas (output-deltas target output)
+        h-output (layer-output input hidden-layer tanh)
+        h-deltas (hidden-deltas (hidden-error o-deltas (copy output-layer) 0) h-output)]
+    (do
+      (change-hidden-weights hidden-layer h-deltas input speed-learning 0)
+      (change-output-weights output-layer o-deltas h-output speed-learning 0))))
 

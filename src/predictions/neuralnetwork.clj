@@ -84,6 +84,6 @@
 
 (defn learning-once
   [h-layer o-layer  input-vec target-vec speed-learning]
-  (for [[i t] (map list input-vec target-vec)]
-    (backpropagation h-layer o-layer i t speed-learning)))
+  (str (for [[i t] (map list input-vec target-vec)]
+         (backpropagation h-layer o-layer i t speed-learning))))
 

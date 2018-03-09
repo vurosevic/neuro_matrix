@@ -1,5 +1,6 @@
 (ns predictions.example
   (:require [predictions.neuralnetwork :refer :all]
+            [predictions.data :refer :all]
             [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
             [uncomplicate.neanderthal.native :refer :all]))
@@ -9,7 +10,7 @@
 
 
 (def hidden-layer-test (create-random-matrix 24 13))
-(def output-layer-test (create-random-matrix 2 24))
+(def output-layer-test (create-random-matrix 1 24))
 
 (-> hidden-layer-test)
 (-> output-layer-test)
@@ -29,5 +30,8 @@
        ))
 
 
+(str (for [a (replicate 10000 1)]
+       (learning-once hidden-layer-test output-layer-test input-data-training target-data-training 0.05)
+       ))
 
 

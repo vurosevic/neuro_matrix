@@ -30,7 +30,7 @@
 
 (defn dtanh
   [y]
-  (xpy (prepare-unit-vector (dim y)) (scal -1 (sqr (tanh y)))))
+  (xpy (prepare-unit-vector (dim y)) (scal -1 (sqr y))))
 
 (defn output-deltas
   [targets outputs]
@@ -47,7 +47,20 @@
       (do
         (scal! delta-scalar neuron-weights)
         (hidden-error o-deltas weights (inc current)))
-      (mv (trans weights) (prepare-unit-vector (inc current))))))
+        (mv (trans weights) (prepare-unit-vector (inc current)))
+      )))
+
+(defn hidden-error
+  "output-deltas vector & copy weigths matrix & counter"
+  [o-deltas weights current]
+  (let [delta-scalar (entry o-deltas current)
+        neuron-weights (row weights current)]
+      (do
+        (scal! delta-scalar neuron-weights)
+        (if (< current (dec (dim o-deltas)))
+        (hidden-error o-deltas weights (inc current))))
+      (mv (trans weights) (prepare-unit-vector (inc current)))
+    ))
 
 (defn hidden-deltas
   "hidden-error vector & hidden-output vector"
@@ -85,8 +98,29 @@
 (defn learning-once
   [h-layer o-layer  input-vec target-vec speed-learning]
   (str (for [[i t] (map list input-vec target-vec)]
-         (for [a (replicate 10 1)]
+         (for [a (replicate 2 1)]
            (backpropagation h-layer o-layer i t speed-learning)
            )
          )))
 
+(defn output-network
+  [h-layer o-layer input-vec]
+  (layer-output (layer-output input-vec h-layer tanh) o-layer tanh)
+  )
+
+(defn evaluation
+  [h-layer o-layer input-vec target-vec]
+  (for [[i t] (map list input-vec target-vec)]
+    {:output (entry (output-network h-layer o-layer i) 0)
+     :target (entry t 0)
+     :percent-abs (Math/abs (* (/ (- (entry (output-network h-layer o-layer i) 0) (entry t 0)) (entry t 0)) 100))
+     }
+    ))
+
+(defn evaluation_sum_abs
+  "evaluation neural network - average report by absolute deviations"
+  [h-layer o-layer input-vec target-vec]
+  (let [u (count (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
+        s (reduce + (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
+        ]
+    (/ s u)))

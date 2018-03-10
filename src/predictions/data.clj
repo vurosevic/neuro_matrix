@@ -30,5 +30,5 @@
 (def input-data-training (vec (map dv (map :x (read-data-training)))))
 (def target-data-training (vec (map dv (map :y (read-data-training)))))
 
-(def input-data-test (vec (map dv (map :x (read-data-training)))))
-(def target-data-test (vec (map dv (map :y (read-data-training)))))
+(def input-data-test (vec (map dv (map :x (read-data-test)))))
+(def target-data-test (vec (map dv (map :y (read-data-test)))))

@@ -9,8 +9,8 @@
 
 
 
-(def hidden-layer-test (create-random-matrix 24 13))
-(def output-layer-test (create-random-matrix 1 24))
+(def hidden-layer-test (create-random-matrix 64 13))
+(def output-layer-test (create-random-matrix 1 64))
 
 (-> hidden-layer-test)
 (-> output-layer-test)
@@ -30,7 +30,7 @@
        ))
 
 
-(str (for [a (replicate 2000 1)]
+(str (for [a (replicate 1000 1)]
        (learning-once hidden-layer-test output-layer-test input-data-training target-data-training 0.0005)
        ))
 

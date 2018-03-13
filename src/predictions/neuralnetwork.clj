@@ -37,19 +37,6 @@
   (let [error (axpy targets (scal -1 outputs))]
     (mul (dtanh outputs) error)))
 
-
-(defn hidden-error
-  "output-deltas vector & copy weigths matrix & counter"
-  [o-deltas weights current]
-  (let [delta-scalar (entry o-deltas current)
-        neuron-weights (row weights current)]
-    (if (< current (dec (dim o-deltas)))
-      (do
-        (scal! delta-scalar neuron-weights)
-        (hidden-error o-deltas weights (inc current)))
-        (mv (trans weights) (prepare-unit-vector (inc current)))
-      )))
-
 (defn hidden-error
   "output-deltas vector & copy weigths matrix & counter"
   [o-deltas weights current]
@@ -98,7 +85,7 @@
 (defn learning-once
   [h-layer o-layer  input-vec target-vec speed-learning]
   (str (for [[i t] (map list input-vec target-vec)]
-         (for [a (replicate 2 1)]
+         (for [a (replicate 1 1)]
            (backpropagation h-layer o-layer i t speed-learning)
            )
          )))

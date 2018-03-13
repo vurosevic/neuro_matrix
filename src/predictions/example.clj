@@ -30,8 +30,8 @@
        ))
 
 
-(str (for [a (replicate 1000 1)]
-       (learning-once hidden-layer-test output-layer-test input-data-training target-data-training 0.0005)
+(str (for [a (replicate 100 1)]
+       (learning-once hidden-layer-test output-layer-test input-data-training target-data-training 0.000005)
        ))
 
 

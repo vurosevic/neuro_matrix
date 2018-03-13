@@ -1,9 +1,9 @@
-(ns predictions.data
-  (:require [clojure.string :as string]
+(ns ^{:author "Vladimir Urosevic"}
+   predictions.data
+   (:require [clojure.string :as string]
             [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
             [uncomplicate.neanderthal.native :refer :all]))
-
 
 (defn parse-float [s]
   (Float/parseFloat s))

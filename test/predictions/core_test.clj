@@ -1,5 +1,6 @@
-(ns predictions.core-test
-  (:require [clojure.test :refer :all]
+(ns ^{:author "Vladimir Urosevic"}
+    predictions.core-test
+    (:require [clojure.test :refer :all]
             [predictions.core :refer :all]
             [predictions.neuralnetwork :refer :all]
             [predictions.data :refer :all]

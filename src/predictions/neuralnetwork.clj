@@ -1,5 +1,6 @@
-(ns predictions.neuralnetwork
-  (:require [uncomplicate.neanderthal.core :refer :all]
+(ns ^{:author "Vladimir Urosevic"}
+    predictions.neuralnetwork
+    (:require [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
             [uncomplicate.neanderthal.native :refer :all]))
 
@@ -85,9 +86,9 @@
 (defn learning-once
   [h-layer o-layer  input-vec target-vec speed-learning]
   (str (for [[i t] (map list input-vec target-vec)]
-         (for [a (replicate 1 1)]
-           (backpropagation h-layer o-layer i t speed-learning)
-           )
+         ;; (for [a (replicate 1 1)]
+         (backpropagation h-layer o-layer i t speed-learning)
+         ;; )
          )))
 
 (defn output-network

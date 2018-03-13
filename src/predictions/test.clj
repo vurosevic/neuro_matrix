@@ -1,5 +1,6 @@
-(ns predictions.test
-   (:require [uncomplicate.neanderthal.core :refer :all]
+(ns ^{:author "Vladimir Urosevic"}
+    predictions.test
+    (:require [uncomplicate.neanderthal.core :refer :all]
              [uncomplicate.neanderthal.vect-math :refer :all]
              [uncomplicate.neanderthal.native :refer :all]))
 

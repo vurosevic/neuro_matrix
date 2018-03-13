@@ -1,4 +1,5 @@
-(ns predictions.core)
+(ns ^{:author "Vladimir Urosevic"}
+    predictions.core)
 
 (defn foo
   "I don't do a whole lot."

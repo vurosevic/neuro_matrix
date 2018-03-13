@@ -1,9 +1,11 @@
-(ns predictions.example
-  (:require [predictions.neuralnetwork :refer :all]
+(ns ^{:author "Vladimir Urosevic"}
+     predictions.example
+     (:require [predictions.neuralnetwork :refer :all]
             [predictions.data :refer :all]
             [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
-            [uncomplicate.neanderthal.native :refer :all]))
+            [uncomplicate.neanderthal.native :refer :all]
+            [criterium.core :refer :all]))
 
 (def x (dv [1.0 0.86 0.03 0.08 0.903 0.725 0.574 -0.1 -0.203 -0.031 -0.12413793 0.33 0.225]))
 
@@ -30,8 +32,8 @@
        ))
 
 
-(str (for [a (replicate 100 1)]
-       (learning-once hidden-layer-test output-layer-test input-data-training target-data-training 0.000005)
+(str (for [a (replicate 1000 1)]
+       (learning-once hidden-layer-test output-layer-test input-data-training target-data-training 0.00000001)
        ))
 
 

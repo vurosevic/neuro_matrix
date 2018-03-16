@@ -101,6 +101,5 @@
                    (slurp (str "resources/" filename)) #"\n") (inc h-index)))))))
 
 
-(reduce into (map #(map parse-float %) (load-network-configuration "test.csv")))
-
-(dge 50 128 (reduce into (map #(map parse-float %) (load-network-configuration "test.csv"))))
+;; this work
+(trans (dge 50 128 (reduce into [] (map #(map parse-float %) (load-network-configuration "test.csv")))))

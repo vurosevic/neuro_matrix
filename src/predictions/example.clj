@@ -86,7 +86,7 @@
             (-> input-data-training)
             (-> target-data-training))
 
-
+;; pripare for load config
 
 (defn load-network-configuration
        [filename]

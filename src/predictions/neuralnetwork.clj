@@ -1,8 +1,14 @@
 (ns ^{:author "Vladimir Urosevic"}
-    predictions.neuralnetwork
-    (:require [uncomplicate.neanderthal.core :refer :all]
+predictions.neuralnetwork
+  (:require [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
-            [uncomplicate.neanderthal.native :refer :all]))
+            [uncomplicate.neanderthal.native :refer :all]
+            [clojure.string :as string]))
+
+(defrecord Neuronetwork [
+                         hidden-layer                       ;; hidden layer
+                         output-layer                       ;; output layer
+                         ])
 
 (def max-dim 2048)
 
@@ -43,11 +49,11 @@
   [o-deltas weights current]
   (let [delta-scalar (entry o-deltas current)
         neuron-weights (row weights current)]
-      (do
-        (scal! delta-scalar neuron-weights)
-        (if (< current (dec (dim o-deltas)))
+    (do
+      (scal! delta-scalar neuron-weights)
+      (if (< current (dec (dim o-deltas)))
         (hidden-error o-deltas weights (inc current))))
-      (mv (trans weights) (prepare-unit-vector (inc current)))
+    (mv (trans weights) (prepare-unit-vector (inc current)))
     ))
 
 (defn hidden-deltas
@@ -84,31 +90,69 @@
       (change-output-weights output-layer o-deltas h-output speed-learning 0))))
 
 (defn learning-once
-  [h-layer o-layer  input-vec target-vec speed-learning]
+  [h-layer o-layer input-vec target-vec speed-learning]
   (str (for [[i t] (map list input-vec target-vec)]
          ;; (for [a (replicate 1 1)]
          (backpropagation h-layer o-layer i t speed-learning)
          ;; )
          )))
 
+;; (defn output-network
+;;  [h-layer o-layer input-vec]
+;;  (layer-output (layer-output input-vec h-layer tanh) o-layer tanh)
+;;  )
+
+;; (defn evaluation
+;;  [h-layer o-layer input-vec target-vec]
+;; (for [[i t] (map list input-vec target-vec)]
+;; {:output      (entry (output-network h-layer o-layer i) 0)
+;; :target      (entry t 0)
+;; :percent-abs (Math/abs (* (/ (- (entry (output-network h-layer o-layer i) 0) (entry t 0)) (entry t 0)) 100))}
+;; ))
+
+;; (defn evaluation_sum_abs
+;;  "evaluation neural network - average report by absolute deviations"
+;;  [h-layer o-layer input-vec target-vec]
+;; (let [u (count (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
+;;    s (reduce + (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
+;;      ]
+;;  (/ s u)) )
+
 (defn output-network
-  [h-layer o-layer input-vec]
-  (layer-output (layer-output input-vec h-layer tanh) o-layer tanh)
-  )
+  "feed forward propagation"
+  [network input-vec]
+  (layer-output (layer-output input-vec (:hidden-layer network) tanh) (:output-layer network) tanh))
 
 (defn evaluation
-  [h-layer o-layer input-vec target-vec]
+  "evaluation - detail view"
+  [network input-vec target-vec]
   (for [[i t] (map list input-vec target-vec)]
-    {:output (entry (output-network h-layer o-layer i) 0)
-     :target (entry t 0)
-     :percent-abs (Math/abs (* (/ (- (entry (output-network h-layer o-layer i) 0) (entry t 0)) (entry t 0)) 100))
-     }
+    {:output      (entry (output-network network i) 0)
+     :target      (entry t 0)
+     :percent-abs (Math/abs (* (/ (- (entry (output-network network i) 0) (entry t 0)) (entry t 0)) 100))}
     ))
 
 (defn evaluation_sum_abs
   "evaluation neural network - average report by absolute deviations"
-  [h-layer o-layer input-vec target-vec]
-  (let [u (count (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
-        s (reduce + (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
+  [network input-vec target-vec]
+  (let [u (count (map :percent-abs (evaluation network input-vec target-vec)))
+        s (reduce + (map :percent-abs (evaluation network input-vec target-vec)))
         ]
     (/ s u)))
+
+(defn create-network
+  "create new neural network"
+  [number-input-neurons number-hidden-neurons number-output-neurons]
+  (let [
+        hidden-layer (create-random-matrix number-hidden-neurons number-input-neurons)
+        output-layer (create-random-matrix number-output-neurons number-hidden-neurons)
+        ]
+    (->Neuronetwork hidden-layer
+                    output-layer)))
+
+(defn train-network
+  "train network with input/target vectors"
+  [network input-vec target-vec iteration-count speed-learning]
+  (str (for [a (replicate iteration-count 1)]
+         (learning-once (:hidden-layer network) (:output-layer network) input-vec target-vec speed-learning)
+         )))

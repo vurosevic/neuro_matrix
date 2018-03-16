@@ -88,7 +88,7 @@
 
 ;; pripare for load config
 
-(defn load-network-configuration
+(defn load-network-configuration-hidden-layer
        [filename]
        (let [h-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "HIDDEN")
              o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")
@@ -100,6 +100,29 @@
                    (string/split
                    (slurp (str "resources/" filename)) #"\n") (inc h-index)))))))
 
+(defn load-network-configuration-output-layer
+  [filename]
+  (let [h-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "HIDDEN")
+        o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")
+        e-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "END")]
+    (do
+      (map #(string/split % #",")
+           (take (dec (- e-index o-index))
+                 (nthnext
+                   (string/split
+                     (slurp (str "resources/" filename)) #"\n") (inc o-index)))))))
 
-;; this work
-(trans (dge 50 128 (reduce into [] (map #(map parse-float %) (load-network-configuration "test.csv")))))
+(defn create-network-from-file
+  [filename number-input-neurons number-hidden-neurons number-output-neurons]
+  (let [
+        hidden-layer (trans (dge number-input-neurons number-hidden-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-hidden-layer filename)))))
+        output-layer (trans (dge number-hidden-neurons number-output-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-output-layer filename)))))
+        ]
+    (->Neuronetwork hidden-layer
+                    output-layer)))
+
+;; this work - hidden layer
+(trans (dge 50 128 (reduce into [] (map #(map parse-float %) (load-network-configuration-hidden-layer "test2.csv")))))
+
+;; this work - output layer
+(trans (dge 128 1 (reduce into [] (map #(map parse-float %) (load-network-configuration-output-layer "test2.csv")))))

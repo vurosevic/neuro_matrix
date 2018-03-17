@@ -131,9 +131,14 @@ predictions.neuralnetwork
 
 (defn create-network-from-file
   "create new neural network and load state from file"
-  [filename number-input-neurons number-hidden-neurons number-output-neurons]
-  (let [hidden-layer (trans (dge number-input-neurons number-hidden-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-hidden-layer filename)))))
-        output-layer (trans (dge number-hidden-neurons number-output-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-output-layer filename)))))]
+  [filename]
+  (let [h-layer-conf (load-network-configuration-hidden-layer filename)
+        o-layer-conf (load-network-configuration-output-layer filename)
+        number-input-neurons (get-number-of-input-neurons filename)
+        number-hidden-neurons (count h-layer-conf)
+        number-output-neurons (count o-layer-conf)
+        hidden-layer (trans (dge number-input-neurons number-hidden-neurons (reduce into [] (map #(map parse-float %) h-layer-conf))))
+        output-layer (trans (dge number-hidden-neurons number-output-neurons (reduce into [] (map #(map parse-float %) o-layer-conf))))]
     (->Neuronetwork hidden-layer
                     output-layer)))
 

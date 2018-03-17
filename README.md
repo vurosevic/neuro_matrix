@@ -55,7 +55,7 @@ When your network good trained, you can save state in file.
 
 ;; create network from file with filename "test3.csv"
 
-(def newnet-ff (atom (create-network-from-file "test3.csv" 50 128 1)))
+(def newnet-ff (atom (create-network-from-file "test3.csv")))
 
 
 ## License

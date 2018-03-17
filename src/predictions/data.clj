@@ -56,7 +56,19 @@
     (write-file filename "END\n")
     ))
 
+
+(defn get-number-of-input-neurons
+  [filename]
+  (let [h-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "HIDDEN")
+        o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")]
+  (count (get (vec (map #(string/split % #",")
+                    (take 1 (nthnext
+                            (string/split
+                            (slurp (str "resources/" filename)) #"\n") (inc h-index)))))0)))
+  )
+
 (defn load-network-configuration-hidden-layer
+  "get a hidden part of data from file"
   [filename]
   (let [h-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "HIDDEN")
         o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")]
@@ -68,6 +80,7 @@
                      (slurp (str "resources/" filename)) #"\n") (inc h-index)))))))
 
 (defn load-network-configuration-output-layer
+  "get a output part of data from file"
   [filename]
   (let [o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")
         e-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "END")]

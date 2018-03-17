@@ -1,12 +1,13 @@
 (ns ^{:author "Vladimir Urosevic"}
      predictions.example
-     (:require [predictions.neuralnetwork :refer :all]
-            [predictions.data :refer :all]
+     (:require
             [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
             [uncomplicate.neanderthal.native :refer :all]
             [criterium.core :refer :all]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [predictions.data :refer :all]
+            [predictions.neuralnetwork :refer :all]))
 
 
 ;; example how to use this library
@@ -32,11 +33,11 @@
 
 
 ;; create network from file
-(def newnet2 (atom (create-network-from-file "test4.csv" 50 128 1)))
+(def newnet2 (atom (create-network-from-file "test4.csv")))
 
 (evaluation_sum_abs @newnet2
-                    (-> input-data-training)
-                    (-> target-data-training))
+                    (-> input-data-test)
+                    (-> target-data-test))
 
 (train-network @newnet2 (-> input-data-training) (-> target-data-training) 1000 0.05)
 

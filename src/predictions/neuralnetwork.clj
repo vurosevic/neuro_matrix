@@ -1,6 +1,7 @@
 (ns ^{:author "Vladimir Urosevic"}
 predictions.neuralnetwork
-  (:require [uncomplicate.neanderthal.core :refer :all]
+  (:require [predictions.data :refer :all]
+            [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
             [uncomplicate.neanderthal.native :refer :all]
             [clojure.string :as string]))
@@ -80,6 +81,7 @@ predictions.neuralnetwork
         (change-hidden-weights h-weights h-deltas i-hidden speed-learning (inc current))))))
 
 (defn backpropagation
+  "learn network with one input vector"
   [hidden-layer output-layer input target speed-learning]
   (let [output (layer-output (layer-output input hidden-layer tanh) output-layer tanh)
         o-deltas (output-deltas target output)
@@ -90,33 +92,13 @@ predictions.neuralnetwork
       (change-output-weights output-layer o-deltas h-output speed-learning 0))))
 
 (defn learning-once
+  "learn network one time with all training vectors "
   [h-layer o-layer input-vec target-vec speed-learning]
   (str (for [[i t] (map list input-vec target-vec)]
          ;; (for [a (replicate 1 1)]
          (backpropagation h-layer o-layer i t speed-learning)
          ;; )
          )))
-
-;; (defn output-network
-;;  [h-layer o-layer input-vec]
-;;  (layer-output (layer-output input-vec h-layer tanh) o-layer tanh)
-;;  )
-
-;; (defn evaluation
-;;  [h-layer o-layer input-vec target-vec]
-;; (for [[i t] (map list input-vec target-vec)]
-;; {:output      (entry (output-network h-layer o-layer i) 0)
-;; :target      (entry t 0)
-;; :percent-abs (Math/abs (* (/ (- (entry (output-network h-layer o-layer i) 0) (entry t 0)) (entry t 0)) 100))}
-;; ))
-
-;; (defn evaluation_sum_abs
-;;  "evaluation neural network - average report by absolute deviations"
-;;  [h-layer o-layer input-vec target-vec]
-;; (let [u (count (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
-;;    s (reduce + (map :percent-abs (evaluation h-layer o-layer input-vec target-vec)))
-;;      ]
-;;  (/ s u)) )
 
 (defn output-network
   "feed forward propagation"
@@ -136,27 +118,22 @@ predictions.neuralnetwork
   "evaluation neural network - average report by absolute deviations"
   [network input-vec target-vec]
   (let [u (count (map :percent-abs (evaluation network input-vec target-vec)))
-        s (reduce + (map :percent-abs (evaluation network input-vec target-vec)))
-        ]
+        s (reduce + (map :percent-abs (evaluation network input-vec target-vec)))]
     (/ s u)))
 
 (defn create-network
   "create new neural network"
   [number-input-neurons number-hidden-neurons number-output-neurons]
-  (let [
-        hidden-layer (create-random-matrix number-hidden-neurons number-input-neurons)
-        output-layer (create-random-matrix number-output-neurons number-hidden-neurons)
-        ]
+  (let [hidden-layer (create-random-matrix number-hidden-neurons number-input-neurons)
+        output-layer (create-random-matrix number-output-neurons number-hidden-neurons)]
     (->Neuronetwork hidden-layer
                     output-layer)))
 
 (defn create-network-from-file
   "create new neural network and load state from file"
   [filename number-input-neurons number-hidden-neurons number-output-neurons]
-  (let [
-        hidden-layer (trans (dge number-input-neurons number-hidden-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-hidden-layer filename)))))
-        output-layer (trans (dge number-hidden-neurons number-output-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-output-layer filename)))))
-        ]
+  (let [hidden-layer (trans (dge number-input-neurons number-hidden-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-hidden-layer filename)))))
+        output-layer (trans (dge number-hidden-neurons number-output-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-output-layer filename)))))]
     (->Neuronetwork hidden-layer
                     output-layer)))
 

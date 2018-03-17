@@ -23,16 +23,16 @@
                              -0.084	-0.127	-0.069	-0.823	0.8	0.2]))
 
 (evaluation @newnet
-            (-> input-data-training)
-            (-> target-data-training))
+            (-> input-data-test)
+            (-> target-data-test))
 
 (evaluation_sum_abs @newnet
-            (-> input-data-training)
-            (-> target-data-training))
+            (-> input-data-test)
+            (-> target-data-test))
 
 
 ;; create network from file
-(def newnet2 (atom (create-network-from-file "test3.csv" 50 128 1)))
+(def newnet2 (atom (create-network-from-file "test4.csv" 50 128 1)))
 
 (evaluation_sum_abs @newnet2
                     (-> input-data-training)
@@ -46,4 +46,6 @@
 
 ;; save network configuration to file
 (save-network-to-file @newnet2 "test4.csv")
+
+
 

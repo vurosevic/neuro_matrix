@@ -150,6 +150,16 @@ predictions.neuralnetwork
     (->Neuronetwork hidden-layer
                     output-layer)))
 
+(defn create-network-from-file
+  "create new neural network and load state from file"
+  [filename number-input-neurons number-hidden-neurons number-output-neurons]
+  (let [
+        hidden-layer (trans (dge number-input-neurons number-hidden-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-hidden-layer filename)))))
+        output-layer (trans (dge number-hidden-neurons number-output-neurons (reduce into [] (map #(map parse-float %) (load-network-configuration-output-layer filename)))))
+        ]
+    (->Neuronetwork hidden-layer
+                    output-layer)))
+
 (defn train-network
   "train network with input/target vectors"
   [network input-vec target-vec iteration-count speed-learning]

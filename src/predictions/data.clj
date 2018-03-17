@@ -56,6 +56,28 @@
     (write-file filename "END\n")
     ))
 
+(defn load-network-configuration-hidden-layer
+  [filename]
+  (let [h-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "HIDDEN")
+        o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")]
+    (do
+      (map #(string/split % #",")
+           (take (dec o-index)
+                 (nthnext
+                   (string/split
+                     (slurp (str "resources/" filename)) #"\n") (inc h-index)))))))
+
+(defn load-network-configuration-output-layer
+  [filename]
+  (let [o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")
+        e-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "END")]
+    (do
+      (map #(string/split % #",")
+           (take (dec (- e-index o-index))
+                 (nthnext
+                   (string/split
+                     (slurp (str "resources/" filename)) #"\n") (inc o-index)))))))
+
 
 (def input-data-training (vec (map dv (map :x (read-data-training)))))
 (def target-data-training (vec (map dv (map :y (read-data-training)))))

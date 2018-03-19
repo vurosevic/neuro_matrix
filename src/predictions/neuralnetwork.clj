@@ -30,7 +30,12 @@ predictions.neuralnetwork
 (defn create-random-matrix
   "Initialize a layer"
   [dim-y dim-x]
-  (dge dim-y dim-x (map random-number (replicate (* dim-x dim-y) 1))))
+  (do
+    (if (> dim-y max-dim)
+      (throw (Exception. (str "Error. Max number of neurons is " max-dim))))
+    (if (> dim-x max-dim)
+      (throw (Exception. (str "Error. Max number of neurons is " max-dim))))
+    (dge dim-y dim-x (map random-number (replicate (* dim-x dim-y) 1)))))
 
 (defn layer-output
   [input weights o-func]

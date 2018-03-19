@@ -33,7 +33,11 @@
 
 
 ;; create network from file
-(def newnet2 (atom (create-network-from-file "test4.csv")))
+(def newnet2 (atom (create-network-from-file "example_04.csv")))
+
+(evaluation @newnet2
+            (-> input-data-test)
+            (-> target-data-test))
 
 (evaluation_sum_abs @newnet2
                     (-> input-data-test)

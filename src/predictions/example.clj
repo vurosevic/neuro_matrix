@@ -12,9 +12,9 @@
 
 ;; example how to use this library
 
-(def newnet (atom (create-network 50 128 1)))
+(def newnet (atom (create-network 50 64 1)))
 
-(train-network @newnet (-> input-data-training) (-> target-data-training) 1000 0.05)
+(train-network @newnet (-> input-data-training) (-> target-data-training) 1000 0.00005)
 
 (output-network @newnet (dv [0	0.143	0.581	1	0.96	0.817	0.772	0.724	0.693	0.686
                              0.689	0.725	0.77	0.818	0.844	0.857	0.855	0.849	0.835

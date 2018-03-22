@@ -58,6 +58,7 @@
 
 
 (defn get-number-of-input-neurons
+  "get dimension of input vector from file"
   [filename]
   (let [h-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "HIDDEN")
         o-index (.indexOf (string/split (slurp (str "resources/" filename)) #"\n") "OUTPUT")]

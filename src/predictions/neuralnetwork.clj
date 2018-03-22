@@ -4,7 +4,8 @@ predictions.neuralnetwork
             [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.vect-math :refer :all]
             [uncomplicate.neanderthal.native :refer :all]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.core :as core]))
 
 (defrecord Neuronetwork [
                          hidden-layer                       ;; hidden layer
@@ -108,7 +109,12 @@ predictions.neuralnetwork
 (defn output-network
   "feed forward propagation"
   [network input-vec]
-  (layer-output (layer-output input-vec (:hidden-layer network) tanh) (:output-layer network) tanh))
+  (let [net-input-dim (ncols (:hidden-layer network))
+        input-vec-dim (dim input-vec)]
+    (if (not (= net-input-dim input-vec-dim))
+      (throw (Exception. (str "Error. Dimension of input vector is not correct. Expected dimension is: " net-input-dim)))
+      (layer-output (layer-output input-vec (:hidden-layer network) tanh) (:output-layer network) tanh)
+    )))
 
 (defn evaluation
   "evaluation - detail view"

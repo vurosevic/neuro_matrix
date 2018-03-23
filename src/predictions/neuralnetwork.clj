@@ -25,7 +25,7 @@ predictions.neuralnetwork
 
 (defn random-number
   "random number in interval [0 .. 0.1]"
-  [x]
+  []
   (rand 0.1))
 
 (defn create-random-matrix
@@ -36,7 +36,13 @@ predictions.neuralnetwork
       (throw (Exception. (str "Error. Max number of neurons is " max-dim))))
     (if (> dim-x max-dim)
       (throw (Exception. (str "Error. Max number of neurons is " max-dim))))
-    (dge dim-y dim-x (map random-number (replicate (* dim-x dim-y) 1)))))
+    ;;(dge dim-y dim-x (map random-number (replicate (* dim-x dim-y) 1)))
+    (dge dim-y dim-x (repeatedly random-number))
+    ))
+
+ (defn layer-output
+  [input weights result o-func]
+  (o-func (mm! 1.0 weights input 0.0 result)))
 
 (defn layer-output
   [input weights o-func]
@@ -106,7 +112,7 @@ predictions.neuralnetwork
          ;; )
          )))
 
-(defn output-network
+(defn predict
   "feed forward propagation"
   [network input-vec]
   (let [net-input-dim (ncols (:hidden-layer network))
@@ -114,7 +120,7 @@ predictions.neuralnetwork
     (if (not (= net-input-dim input-vec-dim))
       (throw (Exception. (str "Error. Dimension of input vector is not correct. Expected dimension is: " net-input-dim)))
       (layer-output (layer-output input-vec (:hidden-layer network) tanh) (:output-layer network) tanh)
-    )))
+      )))
 
 (defn evaluation
   "evaluation - detail view"

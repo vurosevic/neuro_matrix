@@ -12,9 +12,9 @@
 
 ;; example how to use this library
 
-(def newnet (atom (create-network 50 64 1)))
+(def newnet (atom (create-network 50 100 1)))
 
-(train-network @newnet input-data-training target-data-training 1000 0.0005)
+(train-network @newnet input-data-training target-data-training 3000 0.000005)
 
 (predict @newnet (dv [0	0.143	0.581	1	0.96	0.817	0.772	0.724	0.693	0.686
                              0.689	0.725	0.77	0.818	0.844	0.857	0.855	0.849	0.835
@@ -29,7 +29,7 @@
 
 
 ;; create network from file
-(def newnet2 (atom (create-network-from-file "example_04.csv")))
+(def newnet (atom (create-network-from-file "example_04.csv")))
 
 (evaluation @newnet input-data-training target-data-training)
 
@@ -56,7 +56,7 @@
 
 (def izlazni_sloj (:output-layer @newnet))
 
-(def result (dge 64 276))
+(def result3 (dge 64 276))
 
 (def result_izlaz (dge 1 276))
 
@@ -67,10 +67,27 @@
 ;; vladimir
 (def input_matrix (trans (dge 50 276 (reduce into [] (map :x (read-data-training))))))
 
-(def input_matrix (dge 50 276 (reduce into [] (map :x (read-data-training)))))
+(def input_matrix2 (trans (dge 50 276 (reduce into [] (map :x (read-data-training))))))
+
+(def input_matrix3 (dge 50 276 (reduce into [] (map :x (read-data-training)))))
 
 (layer-output input_matrix srednji_sloj result tanh!)
 
 (layer-output result izlazni_sloj result_izlaz tanh!)
 
 (with-progress-reporting (quick-bench (layer-output input_matrix srednji_sloj result tanh!)))
+
+
+(evaluate-abs (predict @newnet input_test_matrix2) target_test_matrix2)
+
+(time
+  (str
+    (for [y (range 200)]
+      (for [x (range 275)]
+        (backpropagation @newnet input_matrix2 x target_matrix2 0.01)
+        )
+      )
+    )
+  )
+
+(train-network @newnet input_matrix2 target_matrix2 300 0.00000121)

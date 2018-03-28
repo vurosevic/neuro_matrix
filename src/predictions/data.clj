@@ -98,3 +98,11 @@
 
 (def input-data-test (vec (map dv (map :x (read-data-test)))))
 (def target-data-test (vec (map dv (map :y (read-data-test)))))
+
+(def input_matrix (trans (dge 50 276 (reduce into [] (map :x (read-data-training))))))
+
+(def input_matrix2 (dge 50 276 (reduce into [] (map :x (read-data-training)))))
+(def target_matrix2 (dge 1 276 (map :y (read-data-training))))
+
+(def input_test_matrix2 (dge 50 91 (reduce into [] (map :x (read-data-test)))))
+(def target_test_matrix2 (dge 1 91 (map :y (read-data-test))))

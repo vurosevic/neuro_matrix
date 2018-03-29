@@ -1,4 +1,4 @@
-# predictions
+# System for predicting total electricity consumption
 
 System for predicting total electricity consumption in the next 24 hours.
 This is example of very simple neural network in Clojure. For calculations,

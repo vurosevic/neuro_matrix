@@ -21,7 +21,7 @@ system use Neanderthal library for fast native-speed matrix and linear algebra
 
 #### Network evaluation
 
-;; Evaluation - details
+> ;; Evaluation - details
 
 > (evaluate (predict @newnet input_test_matrix2) target_test_matrix2)
 

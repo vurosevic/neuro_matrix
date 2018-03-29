@@ -9,8 +9,6 @@
             [uncomplicate.neanderthal.native :refer :all]
             [midje.sweet :refer [facts throws => roughly]]))
 
-
-
 (facts
   "test unit vector"
   (prepare-unit-vector 1) => (dv [1])
@@ -20,7 +18,7 @@
 
 (facts
   "test random number"
-  (<= (random-number 0) 0.1) => true
+  (<= (random-number) 0.1) => true
   )
 
 (facts
@@ -30,17 +28,21 @@
 
 (facts
   "test output layer"
-  (layer-output (dv [1 1 1]) (dge 3 3 [1 1 1 1 1 1 1 1 1]) tanh) => (dv [0.9950547536867305 0.9950547536867305 0.9950547536867305])
-  )
+  (let [temp (dge 3 3)]
+    (layer-output (dge 3 3 [0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1]) (dge 3 3 [1 1 1 1 1 1 1 1 1]) temp tanh!)
+    ) => (dge 3 3 [0.29131261245159096 0.29131261245159096 0.29131261245159096 0.29131261245159096 0.29131261245159096 0.29131261245159096 0.29131261245159096 0.29131261245159096 0.29131261245159096]))
 
 (facts
   "test dtanh"
-  (dtanh (dv [1])) => (dv [0])
-  )
+  (let [temp (dv [1])]
+    (dtanh! (dv [1]) temp)
+    ) => (dv [0]))
 
 (facts
   "test output deltas"
-  (output-deltas (dv [0.813]) (dv [0.813])) => (dv [0])
-  )
+  (let [temp (dge 1 1)
+        result (dge 1 1)]
+    (output-deltas (dge 1 1 [0.813]) (dge 1 1 [0.813]) temp result)
+    ) => (dge 1 1 [0]))
 
 
